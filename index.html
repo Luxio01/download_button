@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+	
+	<script>
+	function parseDownloads()
+	{
+		$.ajax({
+			type: "GET",
+			url: 'https://api.github.com/repos/IntelRealSense/librealsense/releases',
+			dataType: 'json',
+			success: function(data){
+				total = 0;
+				for (i = 0; i < data.length; i++)
+					for (j = 0; j < data[i].assets.length; j++)
+						total = total + data[i].assets[j].download_count;
+				
+				$('#downloadCounter').css('display', 'inline-block');
+				$('#downloadCounter').html(Math.round(total/1000) + "K");
+				
+				for (j = 0; j < data[0].assets.length; j++)
+				{
+					asset = data[0].assets[j]; 
+					if (navigator.appVersion.includes("Windows NT 6.1"))
+					{
+						if (asset.name.toLowerCase().includes("win7"))
+						{
+							$('#installer').css('display', 'inline-block');
+							$('#installer').attr('href', asset.browser_download_url);
+						}
+					}
+					else if (navigator.platform.includes("Win"))
+					{
+						if (asset.name.toLowerCase().includes("quality"))
+						{
+							$('#dqt').css('display', 'inline-block');
+							$('#dqt').attr('href', asset.browser_download_url);
+						}
+						else if (asset.name.toLowerCase().includes("viewer"))
+						{
+							$('#viewer').css('display', 'inline-block');
+							$('#viewer').attr('href', asset.browser_download_url);
+						}
+						else if (asset.name.toLowerCase().includes("unitypackage"))
+						{
+							$('#unity').css('display', 'inline-block');
+							$('#unity').attr('href', asset.browser_download_url);
+						}
+						else if (asset.name.toLowerCase().includes("win7"))
+						{
+							// Ignore
+						}
+						else
+						{
+							$('#installer').css('display', 'inline-block');
+							$('#installer').attr('href', asset.browser_download_url);
+						}
+					}
+					else if (navigator.userAgent.includes("Ubuntu") && navigator.userAgent.includes("86"))
+					{
+						$('#debian').css('display', 'inline-block');
+					}
+					else if (navigator.userAgent.includes("86"))
+					{
+						$('#build_x86').css('display', 'inline-block');
+					}
+					else if (navigator.userAgent.includes("Android"))
+					{
+						$('#aos').css('display', 'inline-block');
+					}
+					else
+					{
+						$('#build_other').css('display', 'inline-block');
+					}
+				}
+				$('#sources').attr('href', data[0].zipball_url);
+				$('#sources').html($('#sources').html() + " <small><code>" + data[0].tag_name + "</code></small>");
+			},
+		})
+	}
+	</script>	
+</head>
+<body onload="parseDownloads()">
+	<nav class="navbar navbar-default navbar-static-top">
+		<div class="container">
+			<div class="container-fluid">
+				<ul class="nav navbar-nav navbar-right nav-pills">
+					<li class="dropdown">
+						<a id="drop4" role="button" data-toggle="dropdown" href="#"> <span class="badge badge-pill" id="downloadCounter" style="display: none;"></span> Downloads <b class="caret"></b></a>
+						<ul id="menu1" class="dropdown-menu" role="menu" aria-labelledby="drop4">
+							<li role="presentation"><a role="menuitem" tabindex="-1" href="" id="sources">Source Code</a></li>
+							<li role="presentation"><a role="menuitem" tabindex="-1" href="" id="installer" style="display: none;">Intel&#0169; RealSense&#0153; SDK</a></li>
+							<li role="presentation"><a role="menuitem" tabindex="-1" href="" id="viewer" style="display: none;">Intel&#0169; RealSense&#0153; Viewer</a></li>
+							<li role="presentation"><a role="menuitem" tabindex="-1" href="" id="dqt" style="display: none;">Depth Quality Tool</a></li>
+							<li role="presentation"><a role="menuitem" tabindex="-1" href="" id="unity" style="display: none;">Unity Package</a></li>
+							<li role="presentation"><a role="menuitem" tabindex="-1" href="https://github.com/IntelRealSense/librealsense/blob/master/doc/distribution_linux.md" id="debian" style="display: none;">Debian Package</a></li>
+							<li role="presentation"><a role="menuitem" tabindex="-1" href="https://github.com/IntelRealSense/librealsense/blob/master/doc/installation.md" id="build_x86" style="display: none;">Build Instructions</a></li>
+							<li role="presentation"><a role="menuitem" tabindex="-1" href="https://github.com/IntelRealSense/librealsense/blob/master/doc/libuvc_installation.md" id="build_other" style="display: none;">Build Instructions</a></li>
+							<li role="presentation"><a role="menuitem" tabindex="-1" href="https://github.com/IntelRealSense/librealsense/blob/development/doc/android.md" id="aos" style="display: none;">Build Instructions</a></li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+	
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+</body>
+</html>
